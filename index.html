@@ -3,30 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Презентация: Wing</title>
-    <!-- Подключаем библиотеку для отображения 3D -->
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
-    
-    <style>
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #1a1a1a; color: white; }
-        model-viewer { width: 100vw; height: 85vh; background-color: #252525; }
-        
-        .footer { padding: 20px; text-align: center; background: #111; }
+    <title>Презентация крыла ZR-30</title>
 
-        /* Стиль для точки-аннотации */
+    <!-- Подключаем библиотеку для 3D -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+
+    <style>
+        /* Стили для того, чтобы модель была на весь экран */
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #1a1a1a; color: white; overflow: hidden; }
+        model-viewer { width: 100vw; height: 100vh; background-color: #252525; }
+
+        /* Панель с текстом внизу */
+        .info-panel {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            border-top: 1px solid #4285f4;
+        }
+
+        /* Стиль точки-метки */
         .Hotspot {
             background: #4285f4;
             border-radius: 50%;
-            border: 2px solid #ffffff;
-            width: 18px;
-            height: 18px;
+            border: 2px solid #fff;
+            width: 20px;
+            height: 20px;
             cursor: pointer;
             box-shadow: 0 0 10px rgba(66, 133, 244, 0.8);
         }
 
-        /* Стиль для текста рядом с точкой */
+        /* Стиль всплывающей подсказки */
         .HotspotAnnotation {
-            background: #ffffff;
+            background: #fff;
             color: #000;
             border-radius: 4px;
             padding: 8px 12px;
@@ -35,10 +47,9 @@
             position: absolute;
             transform: translate(20px, -20px);
             white-space: nowrap;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
-        /* Скрываем текст, если точка "спряталась" за моделью */
+        /* Скрываем текст, если он за моделью */
         .Hotspot:not([data-visible]) .HotspotAnnotation {
             display: none;
         }
@@ -47,28 +58,37 @@
 <body>
 
     <model-viewer 
-        src="https://github.com/AllVlad1/Wing/raw/refs/heads/main/Wing.glb" 
-        alt="3D модель крыла"
+        src="Wing.glb" 
+        alt="3D модель крыла ZR-30"
         camera-controls 
         auto-rotate 
         shadow-intensity="1" 
         environment-image="neutral"
-        exposure="1">
+        exposure="1"
+        ar
+        touch-action="pan-y">
 
-        <!-- Метка на модели. Координаты data-position можно уточнить в редакторе -->
+        <!-- Эта точка появится в центре. Позже в редакторе вы сможете уточнить её координаты -->
         <button class="Hotspot" slot="hotspot-1" 
                 data-position="0m 0m 0m" 
-                data-normal="0m 1m 0m" 
-                data-visibility-attribute="visible">
-            <div class="HotspotAnnotation">Деталь: Wing.glb</div>
+                data-normal="0m 1m 0m">
+            <div class="HotspotAnnotation">Крыло ZR-30</div>
         </button>
 
     </model-viewer>
 
-    <div class="footer">
-        <h1>Проект: Модификация крыла</h1>
-        <p>Модель загружена напрямую из репозитория GitHub. Используйте мышь, чтобы вращать деталь.</p>
+    <div class="info-panel">
+        <h2 style="margin: 0;">Проект: Модификация крыла</h2>
+        <p style="margin: 5px 0 0;">Используйте мышь для вращения. Откройте с телефона для просмотра в AR.</p>
     </div>
+
+    <script>
+        // Код для проверки ошибок в консоли браузера
+        const modelViewer = document.querySelector('model-viewer');
+        modelViewer.addEventListener('error', (event) => {
+            console.error("Ошибка загрузки модели:", event.detail.source);
+        });
+    </script>
 
 </body>
 </html>
