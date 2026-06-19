@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Презентация: Wing</title>
+    <!-- Подключаем библиотеку для отображения 3D -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+    
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #1a1a1a; color: white; }
+        model-viewer { width: 100vw; height: 85vh; background-color: #252525; }
+        
+        .footer { padding: 20px; text-align: center; background: #111; }
+
+        /* Стиль для точки-аннотации */
+        .Hotspot {
+            background: #4285f4;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(66, 133, 244, 0.8);
+        }
+
+        /* Стиль для текста рядом с точкой */
+        .HotspotAnnotation {
+            background: #ffffff;
+            color: #000;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 14px;
+            font-weight: bold;
+            position: absolute;
+            transform: translate(20px, -20px);
+            white-space: nowrap;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        /* Скрываем текст, если точка "спряталась" за моделью */
+        .Hotspot:not([data-visible]) .HotspotAnnotation {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <model-viewer 
+        src="https://github.com/AllVlad1/Wing/raw/refs/heads/main/Wing.glb" 
+        alt="3D модель крыла"
+        camera-controls 
+        auto-rotate 
+        shadow-intensity="1" 
+        environment-image="neutral"
+        exposure="1">
+
+        <!-- Метка на модели. Координаты data-position можно уточнить в редакторе -->
+        <button class="Hotspot" slot="hotspot-1" 
+                data-position="0m 0m 0m" 
+                data-normal="0m 1m 0m" 
+                data-visibility-attribute="visible">
+            <div class="HotspotAnnotation">Деталь: Wing.glb</div>
+        </button>
+
+    </model-viewer>
+
+    <div class="footer">
+        <h1>Проект: Модификация крыла</h1>
+        <p>Модель загружена напрямую из репозитория GitHub. Используйте мышь, чтобы вращать деталь.</p>
+    </div>
+
+</body>
+</html>
