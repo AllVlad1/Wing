@@ -3,91 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Презентация крыла ZR-30</title>
-
-    <!-- Подключаем библиотеку для 3D -->
+    <title>ZR-30 Интерактивная модель</title>
+    
+    <!-- Библиотека для 3D -->
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 
     <style>
-        /* Стили для того, чтобы модель была на весь экран */
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #1a1a1a; color: white; overflow: hidden; }
-        model-viewer { width: 100vw; height: 100vh; background-color: #252525; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #121212; color: white; overflow: hidden; }
+        model-viewer { width: 100vw; height: 100vh; background-color: #1a1a1a; }
 
-        /* Панель с текстом внизу */
-        .info-panel {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 20px;
-            text-align: center;
-            backdrop-filter: blur(5px);
-            border-top: 1px solid #4285f4;
-        }
-
-        /* Стиль точки-метки */
+        /* Пульсирующая метка камеры */
         .Hotspot {
-            background: #4285f4;
+            background: #ff4757; /* Красный цвет для камеры */
             border-radius: 50%;
             border: 2px solid #fff;
             width: 20px;
             height: 20px;
             cursor: pointer;
-            box-shadow: 0 0 10px rgba(66, 133, 244, 0.8);
+            box-shadow: 0 0 0 rgba(255, 71, 87, 0.4);
+            animation: pulse 2s infinite;
         }
 
-        /* Стиль всплывающей подсказки */
+        @keyframes pulse {
+          0% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.7); }
+          70% { box-shadow: 0 0 0 15px rgba(255, 71, 87, 0); }
+          100% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0); }
+        }
+
+        /* Выдвижная панель описания */
+        #side-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 350px;
+            height: 100vh;
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(10px);
+            border-left: 3px solid #ff4757;
+            transition: 0.4s ease-out;
+            z-index: 100;
+            padding: 40px 25px;
+            box-sizing: border-box;
+        }
+
+        #side-panel.open { right: 0; }
+
+        .close-btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        h2 { color: #ff4757; margin-bottom: 10px; }
+        .description { line-height: 1.6; color: #ccc; }
+        
         .HotspotAnnotation {
             background: #fff;
             color: #000;
+            padding: 4px 8px;
             border-radius: 4px;
-            padding: 8px 12px;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
             position: absolute;
             transform: translate(20px, -20px);
-            white-space: nowrap;
-        }
-
-        /* Скрываем текст, если он за моделью */
-        .Hotspot:not([data-visible]) .HotspotAnnotation {
-            display: none;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
 
     <model-viewer 
+        id="viewer"
         src="Wing.glb" 
-        alt="3D модель крыла ZR-30"
         camera-controls 
         auto-rotate 
         shadow-intensity="1" 
         environment-image="neutral"
-        exposure="1"
-        ar
-        touch-action="pan-y">
+        ar>
 
-        <!-- Эта точка появится в центре. Позже в редакторе вы сможете уточнить её координаты -->
-        <button class="Hotspot" slot="hotspot-1" 
-                data-position="0m 0m 0m" 
-                data-normal="0m 1m 0m">
-            <div class="HotspotAnnotation">Крыло ZR-30</div>
+        <!-- Ваша точка с камерой (координаты из вашего сообщения) -->
+        <button class="Hotspot" id="cam-button" slot="hotspot-1" 
+                data-position="1.6283034064329058m -5.892560924087164m 5.138407714087119m" 
+                data-normal="0.0037749625044134452m -1.3435788109964579e-7m 0.999992874803652m">
+            <div class="HotspotAnnotation">ZR-30 Camera</div>
         </button>
 
     </model-viewer>
 
-    <div class="info-panel">
-        <h2 style="margin: 0;">Проект: Модификация крыла</h2>
-        <p style="margin: 5px 0 0;">Используйте мышь для вращения. Откройте с телефона для просмотра в AR.</p>
+    <!-- Сама панель -->
+    <div id="side-panel">
+        <button class="close-btn" onclick="closePanel()">✕ Закрыть</button>
+        <h2 id="panel-title">Система обзора ZR-30</h2>
+        <div class="description">
+            <p><b>Тип:</b> Курсовая камера высокого разрешения.</p>
+            <p><b>Назначение:</b> Обеспечивает пилота визуальной информацией в реальном времени с минимальной задержкой.</p>
+            <p><b>Особенности установки:</b> Камера интегрирована в переднюю кромку крыла для обеспечения максимального угла обзора без помех со стороны фюзеляжа.</p>
+        </div>
     </div>
 
     <script>
-        // Код для проверки ошибок в консоли браузера
-        const modelViewer = document.querySelector('model-viewer');
-        modelViewer.addEventListener('error', (event) => {
-            console.error("Ошибка загрузки модели:", event.detail.source);
+        const btn = document.getElementById('cam-button');
+        const panel = document.getElementById('side-panel');
+        const viewer = document.getElementById('viewer');
+
+        // Открытие панели по клику
+        btn.addEventListener('click', () => {
+            panel.classList.add('open');
+            // Камера плавно подлетает к объекту
+            viewer.cameraTarget = "1.62m -5.89m 5.13m";
+            viewer.cameraOrbit = "45deg 75deg 5m";
         });
+
+        function closePanel() {
+            panel.classList.remove('open');
+            // Возвращаем камеру в общий вид
+            viewer.cameraTarget = "auto auto auto";
+        }
     </script>
 
 </body>
